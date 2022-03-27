@@ -1,7 +1,9 @@
 const express = require('express');
-const app = express();
+
 const amController = require('../controllers/amController');
-const reviewController = require('../controllers/reviewController');
+
+const app = express();
+// const reviewController = require('../controllers/reviewController');
 
 // const router = app.router;
 
@@ -13,7 +15,7 @@ app.route('/').get(amController.readForms).post(amController.sendForm);
 // Routes for for handling specific form
 app.route('/:id').get(amController.readForm).patch(amController.respondToForm);
 //
-app.route('reviews').post(reviewController.writeReview);
+// app.route('reviews').post(reviewController.writeReview);
 
 // exporting it
 module.exports = app;

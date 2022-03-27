@@ -5,7 +5,11 @@ const formSchema = new mongoose.Schema({
   sender: {
     type: String,
     required: true,
-    default: req.params.user.name,
+    // default: req.user.name,
+  },
+  bfreeID: {
+    type: String,
+    // default: req.user.bfreeID
   },
   to: {
     type: String,
@@ -68,5 +72,12 @@ formSchema.pre('save', function (next) {
   this.timeToResolve = datesubmited - dateResolved;
   next();
 });
+
+formSchema.pre('save', function (next) {
+  if (!this.email.includes('@bfree'))
+    return next(new ErrorResponse('Kindly use a bfree  official mail', 404));
+});
+
 const Form = mongoose.model('Form', formSchema);
+
 module.exports = Form;
