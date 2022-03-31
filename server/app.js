@@ -6,6 +6,7 @@ const amRoutes = require('./routes/amRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const engineeringRoutes = require('./routes/engineeringRoutes');
+const hrRoutes = require('./routes/hrRoutes');
 
 const globalErrorHandler = require('./controllers/errorContoller');
 
@@ -31,6 +32,7 @@ app.use('/api/v1/agents/forms', amRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/engineering', engineeringRoutes);
+app.use('/api/v1/hr', hrRoutes);
 
 // this is for any unhandled routes requested for
 app.all('*', (req, res, next) => {
