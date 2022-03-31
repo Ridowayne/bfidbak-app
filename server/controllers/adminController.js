@@ -1,5 +1,5 @@
 const Form = require('../models/formModels');
-const Review = required('../models/reviewModels');
+const Review = require('../models/reviewModels');
 const ErrorResponse = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -47,11 +47,11 @@ exports.answeredTickets = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.answeredTickets = catchAsync(async (req, res, next) => {
+exports.unansweredTickets = catchAsync(async (req, res, next) => {
   const undone = await Form.find({ resolved: false });
 
   if (!undone) {
-    return next(new ErrorResponse('There are no resolved tickets', 404));
+    return next(new ErrorResponse('There are no unresolved tickets', 404));
   }
 
   res.status(200).json({

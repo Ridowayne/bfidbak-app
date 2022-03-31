@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     required: [true, 'kindly provide your bfree mail to sign up'],
     validate: [validator.isEmail, 'kindly provide a valide bfreemail'],
+    // validate: [validator.contains],
     // i still neeed to add vildator
   },
   bfreeID: {
@@ -31,17 +32,17 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
     select: false,
   },
-  confirmPassword: {
-    type: String,
-    required: [true, 'Please confirm your password'],
-    validate: {
-      // This only works on CREATE and SAVE!!!
-      validator: function (el) {
-        return el === this.password;
-      },
-      message: 'Passwords are not the same!',
-    },
-  },
+  // confirmPassword: {
+  //   type: String,
+  //   required: [true, 'Please confirm your password'],
+  //   validate: {
+  //     // This only works on CREATE and SAVE!!!
+  //     validator: function (el) {
+  //       return el === this.password;
+  //     },
+  //     message: 'Passwords are not the same!',
+  //   },
+  // },
   active: {
     type: Boolean,
     default: true,

@@ -16,6 +16,35 @@ exports.teamLeadAll = catchAsync(async (req, res, next) => {
   });
 });
 
+// for getting answered tickets
+exports.allansweredtickets = catchAsync(async (req, res, next) => {
+  const answeredTickets = await Form.find({ to: 'Team Lead', resolved: true });
+
+  res.status(200).json({
+    status: 'success',
+    results: answeredTickets.length,
+    data: {
+      answeredTickets,
+    },
+  });
+});
+
+// for getting unanswered tickests
+exports.allansweredtickets = catchAsync(async (req, res, next) => {
+  const unAnsweredTickets = await Form.find({
+    to: 'Team Lead',
+    resolved: false,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    results: unAnsweredTickets.length,
+    data: {
+      unAnsweredTickets,
+    },
+  });
+});
+
 // for reading one parrticular form GET
 exports.readForm = catchAsync(async (req, res, next) => {
   const oneForm = await Form.findById(req.params.id);

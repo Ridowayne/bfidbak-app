@@ -1,3 +1,4 @@
+const req = require('express/lib/request');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
@@ -33,6 +34,7 @@ const createToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: 'success',
     token,
+    // message: `welcome ${req.user.name}`,
     data: {
       user,
     },
@@ -68,17 +70,16 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // search for user
-  const returningUser = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email })
+    .select('+password')
+    .select('+name');
 
   // confirm them from the database if they are there
-  if (
-    !returningUser ||
-    !(await returningUser.correctpassword(password, returningUser.password))
-  ) {
+  if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new ErrorResponse('Incorrect email or password', 401));
   }
 
-  createToken(returningUser, 200, res);
+  createToken(user, 200, res);
 });
 
 // protect routes to only signed in user
@@ -143,9 +144,8 @@ exports.restrictTo = (...designation) => {
         )
       );
     }
+    next();
   };
-
-  next();
 };
 
 // forgot password

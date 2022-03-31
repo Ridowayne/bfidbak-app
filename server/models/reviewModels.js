@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Form = require('./formModels');
 
 const ratingSchema = new mongoose.Schema({
   ratings: {
@@ -8,6 +9,10 @@ const ratingSchema = new mongoose.Schema({
   Comments: {
     type: String,
   },
+  // form: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: Form
+  // },
 });
 
 const Ratings = mongoose.model('Ratings', ratingSchema);

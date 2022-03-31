@@ -4,6 +4,10 @@ const app = express();
 
 const amRoutes = require('./routes/amRoutes');
 const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const engineeringRoutes = require('./routes/engineeringRoutes');
+
+const globalErrorHandler = require('./controllers/errorContoller');
 
 // middlewares
 // app.use(express.json({ limit: '50kb' }));
@@ -25,6 +29,8 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/agents/forms', amRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/engineering', engineeringRoutes);
 
 // this is for any unhandled routes requested for
 app.all('*', (req, res, next) => {
@@ -34,4 +40,7 @@ app.all('*', (req, res, next) => {
   });
   next(new ErrorResponse(`can not get ${req.originalUrl} on the server`, 404));
 });
+
+app.use(globalErrorHandler);
+
 module.exports = app;

@@ -1,5 +1,5 @@
 const io = require('socket.io');
-const sendEmail = require('../utils/');
+const sendEmail = require('../utils/email');
 
 const app = require('./../app');
 const Form = require('../models/formModels');
@@ -8,24 +8,50 @@ const ErrorResponse = require('../utils/appError');
 // const APIFeatures = require('../utils/apiFeatures');
 
 // for sending forms
-exports.sendForm = catchAsync(async (req, res, next) => {
-  console.log('hi');
-  //   const form = await Form.create(req.body);
+exports.sendForm = catchAsync(async (req, res) => {
+  const form = await Form.create(req.body);
+  // const report = new Form({
+  //   sender: req.body.sender,
+  //   to: req.body.to,
+  //   subject: req.body.subject,
+  //   body: req.body.body,
+  // });
 
-  console.log(req.body);
-
-  //   io.on('form', (socket) => {
-  //     socket.emit('newFeedback', form);
-  //   });
-  console.log('vvvvvvv');
+  // io.on('form', (socket) => {
+  //   socket.emit('newFeedback', form);
+  // });
 
   res.status(200).json({
     status: 'success',
     feedback: {
-      //   form,
+      // report,
+      form,
     },
   });
 });
+
+// exports.sendForm = catchAsync(async (req, res, next) => {
+//   console.log('hi');
+//   const form = await Form.create(req.body);
+//   // const form = new Form(req.body);
+//   // const form = await Form.create(req.body);
+//   // await form.save;
+
+//   console.log(req.body);
+
+//   //   io.on('form', (socket) => {
+//   //     socket.emit('newFeedback', form);
+//   //   });
+//   console.log('vvvvvvv');
+
+//   res.status(200).json({
+//     status: 'success',
+//     feedback: {
+//       form,
+//     },
+//   });
+//   next();
+// });
 
 // for getting all feedback forms GET belonging to the user
 exports.readForms = catchAsync(async (req, res) => {
@@ -47,7 +73,9 @@ exports.readForms = catchAsync(async (req, res) => {
 
   res.status(200).json({
     status: 'success',
-    feedback: {
+    results: allForms.length,
+    message: 'all forms available',
+    data: {
       allForms,
     },
   });

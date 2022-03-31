@@ -1,10 +1,12 @@
 const req = require('express/lib/request');
 const mongoose = require('mongoose');
 
+const Review = require('./reviewModels');
+
 const formSchema = new mongoose.Schema({
   sender: {
     type: String,
-    required: true,
+    // required: true,
     // default: req.user.name,
   },
   bfreeID: {
@@ -51,32 +53,32 @@ const formSchema = new mongoose.Schema({
   timeToResolve: {
     type: Number,
   },
+  ratings: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: Review,
+  },
 });
 
-formSchema.pre('save', function (next) {
-  if (!this.isModified('resolution')) return next;
+// formSchema.pre('save', function (next) {
+//   if (!this.isModified('resolution')) return next;
 
-  this.dateResolved = Date.now;
-});
+//   this.dateResolved = Date.now;
+//   next();
+// });
 
-formSchema.pre('save', function (next) {
-  if (!this.isModified('resolutiion')) return next;
+// formSchema.pre('save', function (next) {
+//   if (!this.isModified('resolutiion')) return next;
 
-  this.resolved = true;
-  next();
-});
+//   this.resolved = true;
+//   next();
+// });
 
-formSchema.pre('save', function (next) {
-  if (!this.isModified('resolutiion')) return next;
+// formSchema.pre('save', function (next) {
+//   if (!this.isModified('resolutiion')) return next;
 
-  this.timeToResolve = datesubmited - dateResolved;
-  next();
-});
-
-formSchema.pre('save', function (next) {
-  if (!this.email.includes('@bfree'))
-    return next(new ErrorResponse('Kindly use a bfree  official mail', 404));
-});
+//   this.timeToResolve = datesubmited - dateResolved;
+//   next();
+// });
 
 const Form = mongoose.model('Form', formSchema);
 
