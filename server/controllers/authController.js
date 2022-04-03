@@ -1,4 +1,5 @@
 const req = require('express/lib/request');
+require('dotenv').config({ path: __dirname + '/config.env' });
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
@@ -9,32 +10,61 @@ const catchAsync = require('../utils/catchAsync');
 const ErrorResponse = require('../utils/appError');
 
 // make token
-const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_COOKIE_EXPIRES_IN,
+const signToken = (id, name) => {
+  return jwt.sign({ id, name }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
 // sending token
+// const createToken = (user, statusCode, req, res) => {
+//   const token = signToken(user._id, user.name);
+//   const cookiesOptions =
+//     // ('jwt',
+//     // token,
+//     {
+//       expires: new Date(
+//         Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 1000
+//       ),
+//       httpOnly: true,
+//       // secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+//     };
+
+//   if (process.env.NODE_ENV === 'production') cookiesOptions.secure = true;
+
+//   // res.cookie('jwt', token, cookiesOptions);
+
+//   // remove password from out put
+//   user.password = undefined;
+
+//   res.status(statusCode).json({
+//     status: 'success',
+//     token,
+//     // message: `welcome ${req.user.name}`,
+//     data: {
+//       user,
+//     },
+//   });
+// };
+
 const createToken = (user, statusCode, res) => {
   const token = signToken(user._id);
-  const cookiesOptions = {
+  const cookieOptions = {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 1000
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
   };
-  if (process.env.NODE_ENV === 'production') cookiesOptions.secure = true;
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-  res.cookie('jwt', token, cookiesOptions);
+  res.cookie('jwt', token, cookieOptions);
 
-  // remove password from out put
+  // remove the password from the output
   user.password = undefined;
 
   res.status(statusCode).json({
     status: 'success',
     token,
-    // message: `welcome ${req.user.name}`,
     data: {
       user,
     },
@@ -52,7 +82,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     designation: req.body.designation,
   });
 
-  createToken(newUser, 200, res);
+  createToken(newUser, 201, req, res);
 });
 
 // log user in
@@ -80,7 +110,17 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   createToken(user, 200, res);
+  req.user = user;
+  console.log(req.user);
 });
+
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: 'success' });
+};
 
 // protect routes to only signed in user
 exports.protect = catchAsync(async (req, res, next) => {
@@ -91,6 +131,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -104,9 +146,10 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // 2) Verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  console.log(decoded);
 
   // 3) Check if user still exist
-  const currentUser = await User.findById(decoded._id);
+  const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
     return next(
       new ErrorResponse(
@@ -129,6 +172,10 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // GRANT ACCESS TO VERIFIED USER TO USE PROTECTED ROUTES
   req.user = currentUser;
+  module.exports.senderInfo = req.user.name;
+
+  // res.locals.user = currentUser;
+  console.log(req.user.name);
   next();
 });
 

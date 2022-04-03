@@ -30,7 +30,7 @@ exports.allansweredtickets = catchAsync(async (req, res, next) => {
 });
 
 // for getting unanswered tickests
-exports.allansweredtickets = catchAsync(async (req, res, next) => {
+exports.allunansweredtickets = catchAsync(async (req, res, next) => {
   const unAnsweredTickets = await Form.find({
     to: 'Team Lead',
     resolved: false,

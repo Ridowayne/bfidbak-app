@@ -9,13 +9,12 @@ const ErrorResponse = require('../utils/appError');
 
 // for sending forms
 exports.sendForm = catchAsync(async (req, res) => {
-  const form = await Form.create(req.body);
-  // const report = new Form({
-  //   sender: req.body.sender,
-  //   to: req.body.to,
-  //   subject: req.body.subject,
-  //   body: req.body.body,
-  // });
+  const form = await Form.create({
+    sender: { toString: () => req.user.name },
+    to: req.body.to,
+    subject: req.body.subject,
+    body: req.body.body,
+  });
 
   // io.on('form', (socket) => {
   //   socket.emit('newFeedback', form);
@@ -24,34 +23,10 @@ exports.sendForm = catchAsync(async (req, res) => {
   res.status(200).json({
     status: 'success',
     feedback: {
-      // report,
       form,
     },
   });
 });
-
-// exports.sendForm = catchAsync(async (req, res, next) => {
-//   console.log('hi');
-//   const form = await Form.create(req.body);
-//   // const form = new Form(req.body);
-//   // const form = await Form.create(req.body);
-//   // await form.save;
-
-//   console.log(req.body);
-
-//   //   io.on('form', (socket) => {
-//   //     socket.emit('newFeedback', form);
-//   //   });
-//   console.log('vvvvvvv');
-
-//   res.status(200).json({
-//     status: 'success',
-//     feedback: {
-//       form,
-//     },
-//   });
-//   next();
-// });
 
 // for getting all feedback forms GET belonging to the user
 exports.readForms = catchAsync(async (req, res) => {

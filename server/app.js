@@ -7,6 +7,13 @@ const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const engineeringRoutes = require('./routes/engineeringRoutes');
 const hrRoutes = require('./routes/hrRoutes');
+const teamLeadRoutes = require('./routes/teamLeadRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const managementRoutes = require('./routes/managementRoutes');
+const iTRoutes = require('./routes/iTRoutes');
+
+const { restrictTo } = require('./controllers/authController');
+const { protect } = require('./controllers/authController');
 
 const globalErrorHandler = require('./controllers/errorContoller');
 
@@ -28,11 +35,24 @@ app.get('/', (req, res) => {
   res.send('welcome to bfree feedback app, YOLO');
 });
 
-app.use('/api/v1/agents/forms', amRoutes);
+app.use('/api/v1/agents/forms', protect, restrictTo('AM', 'Admin'), amRoutes);
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/admin', adminRoutes);
-app.use('/api/v1/engineering', engineeringRoutes);
-app.use('/api/v1/hr', hrRoutes);
+app.use('/api/v1/admin', protect, restrictTo('admin', 'Admin'), adminRoutes);
+app.use(
+  '/api/v1/engineering',
+  protect,
+  restrictTo('Engineering', 'Admin'),
+  engineeringRoutes
+);
+app.use('/api/v1/hr', protect, restrictTo('HR', 'Admin'), hrRoutes);
+app.use('/api/v1/IT', protect, restrictTo('IT', 'Admin'), iTRoutes);
+app.use(
+  '/api/v1/management',
+  protect,
+  restrictTo('Management'),
+  managementRoutes
+);
+app.use('/api/v1/teamLead', protect, restrictTo('Team Lead'), teamLeadRoutes);
 
 // this is for any unhandled routes requested for
 app.all('*', (req, res, next) => {

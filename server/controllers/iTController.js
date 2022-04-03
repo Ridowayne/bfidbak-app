@@ -4,14 +4,14 @@ const catchAsync = require('../utils/catchAsync');
 const ErrorResponse = require('../utils/catchAsync');
 
 //Team leads(get att tickects, get a ticket, respond to tickeds)
-exports.teamLeadAll = catchAsync(async (req, res, next) => {
-  const teamLeadIssues = await Form.find({ to: 'IT' });
+exports.iTAll = catchAsync(async (req, res, next) => {
+  const iTIssues = await Form.find({ to: 'IT' });
 
   res.status(200).json({
     status: 'success',
-    results: teamLeadIssues.length,
+    results: iTIssues.length,
     data: {
-      teamLeadIssues,
+      iTIssues,
     },
   });
 });
@@ -30,7 +30,7 @@ exports.allansweredtickets = catchAsync(async (req, res, next) => {
 });
 
 // for getting unanswered tickests
-exports.allansweredtickets = catchAsync(async (req, res, next) => {
+exports.allunansweredtickets = catchAsync(async (req, res, next) => {
   const unAnsweredTickets = await Form.find({ to: 'IT', resolved: false });
 
   res.status(200).json({

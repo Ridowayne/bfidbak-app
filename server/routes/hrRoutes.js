@@ -3,9 +3,6 @@ const app = express();
 const router = express.Router;
 
 const hrContoller = require('../controllers/hrController');
-const { restrictTo } = require('../controllers/authController');
-
-app.use(restrictTo('admin'));
 
 app.route('/:id').get(hrContoller.readForm).post(hrContoller.respondToForm);
 

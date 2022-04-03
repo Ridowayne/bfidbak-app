@@ -7,7 +7,6 @@ const formSchema = new mongoose.Schema({
   sender: {
     type: String,
     // required: true,
-    // default: req.user.name,
   },
   bfreeID: {
     type: String,
@@ -59,26 +58,24 @@ const formSchema = new mongoose.Schema({
   },
 });
 
-// formSchema.pre('save', function (next) {
-//   if (!this.isModified('resolution')) return next;
+formSchema.pre('save', function (next) {
+  if (this.isModified('resolution')) this.dateResolved = Date.now;
 
-//   this.dateResolved = Date.now;
-//   next();
-// });
+  next();
+});
 
-// formSchema.pre('save', function (next) {
-//   if (!this.isModified('resolutiion')) return next;
+formSchema.pre('save', function (next) {
+  if (this.isModified('resolutiion')) this.resolved = true;
 
-//   this.resolved = true;
-//   next();
-// });
+  next();
+});
 
-// formSchema.pre('save', function (next) {
-//   if (!this.isModified('resolutiion')) return next;
+formSchema.pre('save', function (next) {
+  if (this.isModified('resolutiion'))
+    this.timeToResolve = datesubmited - dateResolved / 1000 / 60;
 
-//   this.timeToResolve = datesubmited - dateResolved;
-//   next();
-// });
+  next();
+});
 
 const Form = mongoose.model('Form', formSchema);
 
