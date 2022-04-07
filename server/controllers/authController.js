@@ -47,7 +47,7 @@ const signToken = (id, name) => {
 //   });
 // };
 
-const createToken = (user, statusCode, res) => {
+const createToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(
@@ -109,9 +109,8 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new ErrorResponse('Incorrect email or password', 401));
   }
 
-  createToken(user, 200, res);
+  createToken(user, 200, req, res);
   req.user = user;
-  console.log(req.user);
 });
 
 exports.logout = (req, res) => {
@@ -146,7 +145,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // 2) Verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decoded);
 
   // 3) Check if user still exist
   const currentUser = await User.findById(decoded.id);
@@ -172,10 +170,9 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // GRANT ACCESS TO VERIFIED USER TO USE PROTECTED ROUTES
   req.user = currentUser;
-  module.exports.senderInfo = req.user.name;
 
   // res.locals.user = currentUser;
-  console.log(req.user.name);
+
   next();
 });
 
@@ -262,3 +259,17 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   createToken(user, 200, res);
 });
+
+exports.getMe = async (req, res, next) => {
+  console.log('hi');
+  req.params = req.user;
+  const me = await User.findOne();
+  res.status(200).json({
+    status: 'success',
+    data: {
+      me,
+    },
+  });
+
+  next();
+};

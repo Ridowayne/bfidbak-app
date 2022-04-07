@@ -11,6 +11,7 @@ const ErrorResponse = require('../utils/appError');
 exports.sendForm = catchAsync(async (req, res) => {
   const form = await Form.create({
     sender: { toString: () => req.user.name },
+    bfreeID: { toString: () => req.user.bfreeID },
     to: req.body.to,
     subject: req.body.subject,
     body: req.body.body,
@@ -30,16 +31,15 @@ exports.sendForm = catchAsync(async (req, res) => {
 
 // for getting all feedback forms GET belonging to the user
 exports.readForms = catchAsync(async (req, res) => {
-  //   const user = req.user.name;
-  const allForms = await Form.find();
-  //   { sender: user }
+  const allForms = await Form.find({
+    sender: { toString: () => req.user.name },
+  });
 
   if (!allForms) {
     return next(
       new ErrorResponse('you do not have any feedback submitted yet')
     );
   }
-  console.log('yolo');
 
   //   io.on('connection', (socket) => {
   //     // send a message to the client

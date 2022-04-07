@@ -10,6 +10,6 @@ app
   .get(iTContoller.allunansweredtickets)
   .get(iTContoller.iTAll);
 
-app.route('/:id').get(iTContoller.readForm).post(iTContoller.respondToForm);
+app.route('/:id').get(iTContoller.readForm).patch(iTContoller.respondToForm);
 
 module.exports = app;

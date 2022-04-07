@@ -10,6 +10,6 @@ app
   .get(management.allunansweredtickets)
   .get(management.managementAll);
 
-app.route('/:id').get(management.readForm).post(management.respondToForm);
+app.route('/:id').get(management.readForm).patch(management.respondToForm);
 
 module.exports = app;

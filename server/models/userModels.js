@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: [true, 'kindly provide your bfree mail to sign up'],
-    validate: [validator.isEmail, 'kindly provide a valide bfreemail'],
+    validate: [validator.isEmail, 'kindly provide a valid bfreemail'],
 
     // i still neeed to add vildator
   },
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'KIndly create a secure password'],
-    minlength: 8,
+    minlength: 6,
     select: false,
   },
   passwordConfirm: {

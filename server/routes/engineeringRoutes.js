@@ -10,7 +10,7 @@ app.use(restrictTo('Engineering'));
 app
   .route('/:id')
   .get(engineeringContoller.readForm)
-  .post(engineeringContoller.respondToForm);
+  .patch(engineeringContoller.respondToForm);
 
 app
   .route('/')

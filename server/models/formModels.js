@@ -6,11 +6,10 @@ const Review = require('./reviewModels');
 const formSchema = new mongoose.Schema({
   sender: {
     type: String,
-    // required: true,
+    required: true,
   },
   bfreeID: {
     type: String,
-    // default: req.user.bfreeID
   },
   to: {
     type: String,

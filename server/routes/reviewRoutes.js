@@ -8,8 +8,8 @@ const reviewContoller = require('../controllers/reveiwController');
 app
   .route('/')
   .get(reviewContoller.getReviews)
-  .get(reviewContoller.reviewStats)
   .post(reviewContoller.writeReview);
+app.route('/stats', reviewContoller.statsOfReview);
 
 app.route('/:id').get(reviewContoller.getReview);
 

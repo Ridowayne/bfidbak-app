@@ -4,7 +4,7 @@ const router = express.Router;
 
 const hrContoller = require('../controllers/hrController');
 
-app.route('/:id').get(hrContoller.readForm).post(hrContoller.respondToForm);
+app.route('/:id').get(hrContoller.readForm).patch(hrContoller.respondToForm);
 
 app
   .route('/')

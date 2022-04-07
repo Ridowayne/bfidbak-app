@@ -1,5 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
+
 const app = express();
 
 const amRoutes = require('./routes/amRoutes');
@@ -27,8 +33,35 @@ const globalErrorHandler = require('./controllers/errorContoller');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(express.json()); //For JSON requests
-app.use(express.urlencoded({ extended: true }));
+// Body parser, reading data from body into req.body
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// hpp, rate-limit, helmet, xss-clean, mongo-saitize
+app.use(helmet());
+
+// Limit requests from same API
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour!',
+});
+app.use('/api', limiter);
+
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// Data sanitization against XSS
+app.use(xss());
+
+// Prevent parameter pollution
+// app.use(
+//   hpp({
+//     whitelist: [
+//
+//     ]
+//   })
+// );
 
 // routes
 app.get('/', (req, res) => {
@@ -53,7 +86,7 @@ app.use(
   managementRoutes
 );
 app.use('/api/v1/teamLead', protect, restrictTo('Team Lead'), teamLeadRoutes);
-
+app.use('/api/v1/reviews', protect, reviewRoutes);
 // this is for any unhandled routes requested for
 app.all('*', (req, res, next) => {
   res.status(404).json({

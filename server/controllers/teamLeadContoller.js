@@ -63,10 +63,17 @@ exports.readForm = catchAsync(async (req, res, next) => {
 
 // for responding to responding to forms by resolver GET
 exports.respondToForm = catchAsync(async (req, res, next) => {
-  const response = await Form.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  const response = await Form.findByIdAndUpdate(
+    req.params.id,
+    {
+      resolution: req.body.resolution,
+      respondedBy: { toString: () => req.user.name },
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   if (!response) {
     return next(new ErrorResponse('no tour found with such id', 404));

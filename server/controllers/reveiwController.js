@@ -5,7 +5,11 @@ const catchAsync = require('../utils/catchAsync');
 const ErrorResponse = require('../utils/appError');
 
 exports.writeReview = catchAsync(async (req, res) => {
-  const review = await Review.create(req.body);
+  const review = await Review.create({
+    name: { toString: () => req.user.name },
+    ratings: req.body.ratings,
+    comments: req.body.comments,
+  });
 
   // io.emit('review', review);
 
@@ -55,6 +59,23 @@ exports.reviewStats = catchAsync(async (req, res) => {
     results: stats.length,
     data: {
       stats,
+    },
+  });
+});
+
+exports.statsOfReview = catchAsync(async (req, res) => {
+  const reviewStatistics = await Review.aggregate([
+    {
+      $group: {
+        _id: '$ratings',
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+  res.status(200).json({
+    status: 'success',
+    data: {
+      reviewStatistics,
     },
   });
 });

@@ -13,6 +13,6 @@ app
 app
   .route('/:id')
   .get(teamleadController.readForm)
-  .post(teamleadController.respondToForm);
+  .patch(teamleadController.respondToForm);
 
 module.exports = app;

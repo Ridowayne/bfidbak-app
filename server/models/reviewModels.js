@@ -2,11 +2,15 @@ const mongoose = require('mongoose');
 const Form = require('./formModels');
 
 const ratingSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   ratings: {
     type: Number,
     enum: [1, 2, 3, 4, 5],
   },
-  Comments: {
+  comments: {
     type: String,
   },
   // form: {
