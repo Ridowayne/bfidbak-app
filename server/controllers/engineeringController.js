@@ -20,7 +20,7 @@ exports.engineeringAll = catchAsync(async (req, res, next) => {
 exports.allansweredtickets = catchAsync(async (req, res, next) => {
   const answeredTickets = await Form.find({
     to: 'Engineering',
-    resolved: true,
+    answered: true,
   });
 
   res.status(200).json({
@@ -36,7 +36,7 @@ exports.allansweredtickets = catchAsync(async (req, res, next) => {
 exports.allunansweredtickets = catchAsync(async (req, res, next) => {
   const unAnsweredTickets = await Form.find({
     to: 'Engineering',
-    resolved: false,
+    answered: false,
   });
 
   res.status(200).json({
@@ -66,11 +66,12 @@ exports.readForm = catchAsync(async (req, res, next) => {
 
 // for responding to responding to forms by resolver GET
 exports.respondToForm = catchAsync(async (req, res, next) => {
-  const response = await Form.findByIdAndUpdate(
+  const response = await Form.findOneAndUpdate(
     req.params.id,
     {
       resolution: req.body.resolution,
       respondedBy: { toString: () => req.user.name },
+      answered: true,
     },
     {
       new: true,

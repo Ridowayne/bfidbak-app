@@ -3,6 +3,11 @@ const io = require('socket.io');
 const Review = require('../models/reviewModels');
 const catchAsync = require('../utils/catchAsync');
 const ErrorResponse = require('../utils/appError');
+const app = require('../app');
+
+// contoller for am post and get specific
+// controller for receiver get related to him
+// contoller for admin get all
 
 exports.writeReview = catchAsync(async (req, res) => {
   const review = await Review.create({
@@ -36,8 +41,10 @@ exports.getReview = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getReviews = catchAsync(async (req, res, next) => {
-  const allReviews = await Review.find();
+exports.getAmReviews = catchAsync(async (req, res, next) => {
+  const allReviews = await Review.find({
+    sender: { toString: () => req.user.name },
+  });
 
   if (!allReviews) {
     return next(new ErrorResponse('There are no reveiews yet', 401));
@@ -51,18 +58,6 @@ exports.getReviews = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.reviewStats = catchAsync(async (req, res) => {
-  const stats = await Review.aggregate();
-
-  res.status(200).json({
-    status: 'success',
-    results: stats.length,
-    data: {
-      stats,
-    },
-  });
-});
-
 exports.statsOfReview = catchAsync(async (req, res) => {
   const reviewStatistics = await Review.aggregate([
     {
@@ -72,10 +67,28 @@ exports.statsOfReview = catchAsync(async (req, res) => {
       },
     },
   ]);
+  reviewStatistics.length; // 4
+  reviewStatistics.sort((d1, d2) => d1._id - d2._id);
   res.status(200).json({
     status: 'success',
     data: {
       reviewStatistics,
+    },
+  });
+});
+
+exports.allReviews = catchAsync(async (req, res, next) => {
+  const all = await Review.find();
+
+  if (!all) {
+    return next(new ErrorResponse('there are no reviews found yet', 401));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    results: all.length,
+    data: {
+      all,
     },
   });
 });

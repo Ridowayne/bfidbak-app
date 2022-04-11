@@ -33,7 +33,7 @@ exports.sendForm = catchAsync(async (req, res) => {
 exports.readForms = catchAsync(async (req, res) => {
   const allForms = await Form.find({
     sender: { toString: () => req.user.name },
-  });
+  }).select(['-__v']);
 
   if (!allForms) {
     return next(

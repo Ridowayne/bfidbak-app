@@ -18,7 +18,7 @@ exports.managementAll = catchAsync(async (req, res, next) => {
 
 //  for getting answered tickets
 exports.allansweredtickets = catchAsync(async (req, res, next) => {
-  const answeredTickets = await Form.find({ to: 'Management', resolved: true });
+  const answeredTickets = await Form.find({ to: 'Management', answered: true });
 
   res.status(200).json({
     status: 'success',
@@ -33,7 +33,7 @@ exports.allansweredtickets = catchAsync(async (req, res, next) => {
 exports.allunansweredtickets = catchAsync(async (req, res, next) => {
   const unAnsweredTickets = await Form.find({
     to: 'Management',
-    resolved: false,
+    answered: false,
   });
 
   res.status(200).json({

@@ -37,7 +37,7 @@ const formSchema = new mongoose.Schema({
   dateResolved: {
     type: Date,
   },
-  resolved: {
+  answered: {
     type: Boolean,
     default: false,
   },
@@ -57,25 +57,27 @@ const formSchema = new mongoose.Schema({
   },
 });
 
-formSchema.pre('save', function (next) {
-  if (this.isModified('resolution')) this.dateResolved = Date.now;
+formSchema.pre('save', () => console.log('Hello from pre save'));
+
+formSchema.pre('findOneAndUpdate', function (next) {
+  this.set({ dateResolved: new Date() });
 
   next();
 });
 
-formSchema.pre('save', function (next) {
-  if (this.isModified('resolutiion')) this.resolved = true;
+formSchema.pre('findOneAndUpdate', function (next) {
+  this.set({ resolved: true });
 
   next();
 });
 
-formSchema.pre('save', function (next) {
-  if (this.isModified('resolutiion'))
-    this.timeToResolve = datesubmited - dateResolved / 1000 / 60;
+formSchema.pre('findOneAndUpdate', function (next) {
+  this.set({
+    timeToResolve: this.datesubmited - this.dateResolved / 1000 / 60,
+  });
 
   next();
 });
-
 const Form = mongoose.model('Form', formSchema);
 
 module.exports = Form;

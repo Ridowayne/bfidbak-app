@@ -18,7 +18,7 @@ exports.iTAll = catchAsync(async (req, res, next) => {
 
 //  for getting answered tickets
 exports.allansweredtickets = catchAsync(async (req, res, next) => {
-  const answeredTickets = await Form.find({ to: 'IT', resolved: true });
+  const answeredTickets = await Form.find({ to: 'IT', answered: true });
 
   res.status(200).json({
     status: 'success',
@@ -31,7 +31,7 @@ exports.allansweredtickets = catchAsync(async (req, res, next) => {
 
 // for getting unanswered tickests
 exports.allunansweredtickets = catchAsync(async (req, res, next) => {
-  const unAnsweredTickets = await Form.find({ to: 'IT', resolved: false });
+  const unAnsweredTickets = await Form.find({ to: 'IT', answered: false });
 
   res.status(200).json({
     status: 'success',

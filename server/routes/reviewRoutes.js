@@ -5,12 +5,14 @@ const router = express.Router;
 const reviewContoller = require('../controllers/reveiwController');
 
 // still needs to restrict reviewing to onling ams and other things should be for other people
+app.get('/', reviewContoller.allReviews);
 app
-  .route('/')
-  .get(reviewContoller.getReviews)
-  .post(reviewContoller.writeReview);
-app.route('/stats', reviewContoller.statsOfReview);
+  .route('/am')
+  .post(reviewContoller.writeReview)
+  .get(reviewContoller.getAmReviews);
 
-app.route('/:id').get(reviewContoller.getReview);
+app.get('/stats', reviewContoller.statsOfReview);
+
+app.get('/:d', reviewContoller.getReview);
 
 module.exports = app;
