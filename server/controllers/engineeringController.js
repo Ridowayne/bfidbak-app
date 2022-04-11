@@ -5,7 +5,10 @@ const ErrorResponse = require('../utils/catchAsync');
 
 // getting engineering issues
 exports.engineeringAll = catchAsync(async (req, res, next) => {
-  const teamLeadIssues = await Form.find({ to: 'Engineering' });
+  const teamLeadIssues = await Form.find({ to: 'Engineering' })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   res.status(200).json({
     status: 'success',
@@ -21,7 +24,10 @@ exports.allansweredtickets = catchAsync(async (req, res, next) => {
   const answeredTickets = await Form.find({
     to: 'Engineering',
     answered: true,
-  });
+  })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   res.status(200).json({
     status: 'success',
@@ -37,7 +43,10 @@ exports.allunansweredtickets = catchAsync(async (req, res, next) => {
   const unAnsweredTickets = await Form.find({
     to: 'Engineering',
     answered: false,
-  });
+  })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   res.status(200).json({
     status: 'success',

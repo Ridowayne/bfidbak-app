@@ -33,7 +33,10 @@ exports.sendForm = catchAsync(async (req, res) => {
 exports.readForms = catchAsync(async (req, res) => {
   const allForms = await Form.find({
     sender: { toString: () => req.user.name },
-  }).select(['-__v']);
+  })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   if (!allForms) {
     return next(

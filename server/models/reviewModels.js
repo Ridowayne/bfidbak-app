@@ -13,10 +13,10 @@ const ratingSchema = new mongoose.Schema({
   comments: {
     type: String,
   },
-  // form: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: Form
-  // },
+  form: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Form',
+  },
 });
 
 const Ratings = mongoose.model('Ratings', ratingSchema);

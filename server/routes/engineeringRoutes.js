@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
-const router = express.Router;
+const router = express.Router();
 
 const engineeringContoller = require('../controllers/engineeringController');
 const { restrictTo } = require('../controllers/authController');
 
 app.use(restrictTo('Engineering'));
 
-app.get('/answered', engineeringContoller.allansweredtickets);
+router.get('/answered', engineeringContoller.allansweredtickets);
 
 app.get('/', engineeringContoller.allunansweredtickets);
 app

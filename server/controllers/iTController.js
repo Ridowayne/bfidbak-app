@@ -5,7 +5,10 @@ const ErrorResponse = require('../utils/catchAsync');
 
 //Team leads(get att tickects, get a ticket, respond to tickeds)
 exports.iTAll = catchAsync(async (req, res, next) => {
-  const iTIssues = await Form.find({ to: 'IT' });
+  const iTIssues = await Form.find({ to: 'IT' })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   res.status(200).json({
     status: 'success',
@@ -18,7 +21,10 @@ exports.iTAll = catchAsync(async (req, res, next) => {
 
 //  for getting answered tickets
 exports.allansweredtickets = catchAsync(async (req, res, next) => {
-  const answeredTickets = await Form.find({ to: 'IT', answered: true });
+  const answeredTickets = await Form.find({ to: 'IT', answered: true })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   res.status(200).json({
     status: 'success',
@@ -31,7 +37,10 @@ exports.allansweredtickets = catchAsync(async (req, res, next) => {
 
 // for getting unanswered tickests
 exports.allunansweredtickets = catchAsync(async (req, res, next) => {
-  const unAnsweredTickets = await Form.find({ to: 'IT', answered: false });
+  const unAnsweredTickets = await Form.find({ to: 'IT', answered: false })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   res.status(200).json({
     status: 'success',

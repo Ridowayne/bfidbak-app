@@ -4,7 +4,11 @@ const ErrorResponse = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
 exports.getAllFeedbacks = catchAsync(async (req, res, next) => {
-  const feedbacks = await Form.find().limit().sort().paginate();
+  const feedbacks = await Form.find()
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 })
+    .limit(15);
 
   res.status(200).json({
     status: 'success',
@@ -32,7 +36,10 @@ exports.getFeedback = catchAsync(async (req, res, next) => {
 });
 
 exports.answeredTickets = catchAsync(async (req, res, next) => {
-  const done = await Form.find({ resolved: true });
+  const done = await Form.find({ resolved: true })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   if (!done) {
     return next(new ErrorResponse('There are no resolved tickets', 404));
@@ -48,7 +55,10 @@ exports.answeredTickets = catchAsync(async (req, res, next) => {
 });
 
 exports.unansweredTickets = catchAsync(async (req, res, next) => {
-  const undone = await Form.find({ resolved: false });
+  const undone = await Form.find({ resolved: false })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   if (!undone) {
     return next(new ErrorResponse('There are no unresolved tickets', 404));

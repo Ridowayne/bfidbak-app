@@ -5,7 +5,10 @@ const ErrorResponse = require('../utils/catchAsync');
 
 //Team leads(get att tickects, get a ticket, respond to tickeds)
 exports.teamLeadAll = catchAsync(async (req, res, next) => {
-  const teamLeadIssues = await Form.find({ to: 'Team Lead' });
+  const teamLeadIssues = await Form.find({ to: 'Team Lead' })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   res.status(200).json({
     status: 'success',
@@ -18,7 +21,10 @@ exports.teamLeadAll = catchAsync(async (req, res, next) => {
 
 // for getting answered tickets
 exports.allansweredtickets = catchAsync(async (req, res, next) => {
-  const answeredTickets = await Form.find({ to: 'Team Lead', answered: true });
+  const answeredTickets = await Form.find({ to: 'Team Lead', answered: true })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   res.status(200).json({
     status: 'success',
@@ -34,7 +40,10 @@ exports.allunansweredtickets = catchAsync(async (req, res, next) => {
   const unAnsweredTickets = await Form.find({
     to: 'Team Lead',
     answered: false,
-  });
+  })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort({ datesubmited: -1 });
 
   res.status(200).json({
     status: 'success',

@@ -5,7 +5,10 @@ const ErrorResponse = require('../utils/catchAsync');
 
 //Team leads(get att tickects, get a ticket, respond to tickeds)
 exports.teamLeadAll = catchAsync(async (req, res, next) => {
-  const teamLeadIssues = await Form.find({ to: 'Team Lead' });
+  const teamLeadIssues = await Form.find({ to: 'Team Lead' })
+    .select(['-__v'])
+    .populate('ratings')
+    .sort('-dateSubmited');
 
   res.status(200).json({
     status: 'success',
