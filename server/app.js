@@ -6,8 +6,6 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 
-const app = express();
-
 const amRoutes = require('./routes/amRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
@@ -23,18 +21,18 @@ const { protect } = require('./controllers/authController');
 
 const globalErrorHandler = require('./controllers/errorContoller');
 
+const app = express();
+
 // middlewares
-// app.use(express.json({ limit: '50kb' }));
 // app.use(express.static(path.join(__dirname, 'public')))
 
 // app.use(bodyParser.json({ type: 'application/json' }));
-// app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/json' }));
 
 // Body parser, reading data from body into req.body
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '50kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // hpp, rate-limit, helmet, xss-clean, mongo-saitize

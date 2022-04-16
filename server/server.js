@@ -21,37 +21,43 @@ server.listen(port, () => console.log(`Server now running on port ${port}!`));
 
 // Database connection
 const db = process.env.DB;
+
 mongoose
   .connect(db, {})
   .then(() => console.log(' Initial DB connection successful!'));
 
 const connection = mongoose.connection;
 
-connection.once('open', () => {
-  console.log('MongoDB database connected');
+connection
+  .once('open', () => {
+    console.log('MongoDB database connected');
 
-  console.log('Setting change streams');
-  const formsChangeStream = connection.collection('forms').watch();
+    const formsChangeStream = connection.collection('forms').watch();
+    console.log('Setting change streams');
 
-  formsChangeStream.on('change', (change) => {
-    switch (change.operationType) {
-      case 'insert':
-        const form = {
-          _id: change.fullDocument._id,
-          name: change.fullDocument.name,
-          to: change.fullDocument.to,
-          subject: change.fullDocument.subject,
-          body: change.fullDocument.body,
-        };
+    formsChangeStream.on('change', (change) => {
+      switch (change.operationType) {
+        case 'insert':
+          const form = {
+            _id: change.fullDocument._id,
+            name: change.fullDocument.name,
+            to: change.fullDocument.to,
+            subject: change.fullDocument.subject,
+            body: change.fullDocument.body,
+          };
+          console.log('seems working', form);
 
-        io.of('/api/socket').emit('newform', form);
-        break;
+          io.of('/api/socket').emit('newform', form);
+          break;
 
-      case 'update':
-        io.of('/api/socket').emit('answeredform', change.documentKey._id);
-        break;
-    }
+        case 'update':
+          io.of('/api/socket').emit('answeredform', change.documentKey._id);
+          break;
+      }
+    });
+  })
+  .on('error', (e) => {
+    console.error('watcher died');
   });
-});
 
 connection.on('error', (error) => console.log('Error: ' + error));

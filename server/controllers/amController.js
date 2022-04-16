@@ -59,7 +59,7 @@ exports.readForms = catchAsync(async (req, res) => {
   });
 });
 
-// for responding to responding to forms by resolver GET
+// for responding to responding to forms by resolver post
 exports.respondToForm = catchAsync(async (req, res, next) => {
   const response = await Form.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -69,9 +69,9 @@ exports.respondToForm = catchAsync(async (req, res, next) => {
   if (!response) {
     return next(new ErrorResponse('no tour found with such id', 404));
   }
-  io.Socket.on('response', function (response) {
-    io.Socket.emit('agentResponse', response);
-  });
+  // io.Socket.on('response', function (response) {
+  //   io.Socket.emit('agentResponse', response);
+  // });
   res.status(201).json({
     status: 'sucess',
     data: {
@@ -82,7 +82,8 @@ exports.respondToForm = catchAsync(async (req, res, next) => {
 
 // for reading one parrticular form GET
 exports.readForm = catchAsync(async (req, res, next) => {
-  const oneForm = await Form.findById(req.params.id);
+  // const oneForm = await Form.findById(req.params.id).populate('ratings');
+  const oneForm = await Form.findOne({ _id: req.params.id });
 
   if (!oneForm) {
     return next(new ErrorResponse('no form found with such id', 404));
@@ -91,7 +92,7 @@ exports.readForm = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     feedback: {
-      allForm,
+      oneForm,
     },
   });
 });
