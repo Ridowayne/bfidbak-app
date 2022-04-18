@@ -8,7 +8,7 @@ router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 // router.get('/', userController.getAllUsers);
-router.get('/myprofile', authController.getMe);
+router.get('/myprofile', authController.protect, authController.getMe);
 router.get(
   '/users',
   authController.restrictTo('Admin'),

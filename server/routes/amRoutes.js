@@ -1,11 +1,14 @@
 const express = require('express');
 
 const amController = require('../controllers/amController');
+const reviewRoutes = require('./reviewRoutes');
 
 const app = express();
 // const reviewController = require('../controllers/reviewController');
 
-// const router = app.router();
+const router = express.Router();
+
+app.use('/:formId/reviews', reviewRoutes);
 
 // routes partaining to agents and forms
 app.route('/').get(amController.readForms).post(amController.sendForm);

@@ -2,3 +2,11 @@
 config.env
 node_modules
 package-lock.json
+
+hosts: [
+          'cluster0-shard-00-00.kiisc.mongodb.net:27017',
+          'cluster0-shard-00-01.kiisc.mongodb.net:27017',
+          'cluster0-shard-00-02.kiisc.mongodb.net:27017'
+        ],
+# Local Netlify folder
+.netlify

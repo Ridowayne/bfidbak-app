@@ -262,8 +262,9 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
 exports.getMe = async (req, res, next) => {
   console.log('hi');
-  req.params = req.user;
-  const me = await User.findOne();
+  // req.params.id = req.user.id;
+  const me = await User.findById(req.user.id);
+  console.log();
   res.status(200).json({
     status: 'success',
     data: {
