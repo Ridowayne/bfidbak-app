@@ -4,7 +4,8 @@
   "description": "application for inhouse feedback and resolution",
   "main": "server.js",
   "scripts": {
-    "test": "nodemon ./server/server.js"
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"  
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,8 @@
   "homepage": "https://github.com/Ridowayne/bfidbak-app#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "express-mongo-sanitize": "^2.2.0",
@@ -29,9 +32,15 @@
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.8",
+    "netlify-lambda": "^2.0.15",
     "nodemailer": "^6.7.3",
+    "serverless-http": "^3.0.1",
     "socket.io": "^4.4.1",
     "validator": "^13.7.0",
     "xss-clean": "^0.1.1"
+  },
+  "engines": {
+    "node": "16.13.1"
   }
+
 }

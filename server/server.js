@@ -23,7 +23,14 @@ server.listen(port, () => console.log(`Server now running on port ${port}!`));
 const db = process.env.DB;
 
 mongoose
-  .connect(db, {})
+  .connect(db, {
+    // server: {
+    //   socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 },
+    // },
+    // replset: {
+    //   socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 },
+    // },
+  })
   .then(() => console.log(' Initial DB connection successful!'));
 
 const connection = mongoose.connection;

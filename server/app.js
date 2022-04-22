@@ -1,8 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
+const compression = require('compression');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 
@@ -27,9 +29,10 @@ const app = express();
 // app.use(express.static(path.join(__dirname, 'public')))
 
 // app.use(bodyParser.json({ type: 'application/json' }));
-
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ type: 'application/json' }));
+app.use(compression()); //Compress all routes
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '50kb' }));
@@ -62,9 +65,12 @@ app.use(xss());
 // );
 
 // routes
-app.get('/', (req, res) => {
-  res.send('welcome to bfree feedback app, YOLO');
+app.route('/').get(function (req, res) {
+  res.sendFile(process.cwd() + '/index.html');
 });
+// app.get('/', (req, res) => {
+//   res.send('welcome to bfree feedback app, YOLO');
+// });
 
 app.use('/api/v1/agents/forms', protect, restrictTo('AM', 'Admin'), amRoutes);
 app.use('/api/v1/users', userRoutes);
